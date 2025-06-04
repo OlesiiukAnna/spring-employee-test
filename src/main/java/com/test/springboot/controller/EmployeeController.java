@@ -1,14 +1,12 @@
 package com.test.springboot.controller;
 
-import java.util.List;
-
+import com.test.springboot.entity.Employee;
 import com.test.springboot.service.EmployeeService;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.test.springboot.entity.Employee;
+import java.util.List;
 
 @Controller
 @RequestMapping("/employees")
@@ -34,7 +32,7 @@ public class EmployeeController {
 		return "employees/list-employees";
 	}
 
-	@GetMapping("/showFormForAdd")
+	@GetMapping("/show-form-for-add")
 	public String showFormForAdd(Model theModel) {
 
 		// create model attribute to bind form data
@@ -45,7 +43,7 @@ public class EmployeeController {
 		return "employees/employee-form";
 	}
 
-	@GetMapping("/showFormForUpdate")
+	@GetMapping("/show-form-for-update")
 	public String showFormForUpdate(@RequestParam("employeeId") int theId,
 									Model theModel) {
 

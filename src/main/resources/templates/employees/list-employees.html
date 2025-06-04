@@ -19,8 +19,11 @@
 	<h3>Employee Directory</h3>
 	<hr>
 
-	<!-- Add a button -->
-	<a th:href="@{/employees/showFormForAdd}"
+	<form action="#" th:action="@{/logout}" method="POST">
+		<input class="btn btn-primary btn-sm mb-3" type="submit" value="Logout" />
+	</form>
+
+	<a th:href="@{/employees/show-form-for-add}"
 		class="btn btn-primary btn-sm mb-3">
 		Add Employee
 	</a>
@@ -44,7 +47,7 @@
 
 				<!-- Add update button/link -->
 				<td>
-					<a th:href="@{/employees/showFormForUpdate(employeeId=${tempEmployee.id})}"
+					<a th:href="@{/employees/show-form-for-update(employeeId=${tempEmployee.id})}"
 					   class="btn btn-info btn-sm">
 						Update
 					</a>

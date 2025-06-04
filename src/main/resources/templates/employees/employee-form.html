@@ -19,6 +19,10 @@
         <h3>Employee Directory</h3>
         <hr>
 
+        <form action="#" th:action="@{/logout}" method="POST">
+            <input class="btn btn-primary btn-sm mb-3" type="submit" value="Logout" />
+        </form>
+
         <p class="h4 mb-4">Save Employee</p>
 
         <form action="#" th:action="@{/employees/save}"
@@ -35,6 +39,9 @@
 
             <input type="text" th:field="*{email}"
                    class="form-control mb-4 w-25" placeholder="Email">
+
+            <input type="password" th:field="*{password}"
+                   class="form-control mb-4 w-25" placeholder="Password">
 
             <button type="submit" class="btn btn-info col-2">Save</button>
 
