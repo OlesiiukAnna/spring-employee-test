@@ -27,18 +27,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee findById(int theId) {
 		Optional<Employee> result = employeeRepository.findById(theId);
-		
-		Employee theEmployee = null;
-		
+		Employee employee = null;
 		if (result.isPresent()) {
-			theEmployee = result.get();
+			employee = result.get();
 		}
 		else {
-			// we didn't find the employee
 			throw new RuntimeException("Did not find employee id - " + theId);
 		}
-		
-		return theEmployee;
+		return employee;
+	}
+
+	@Override
+	public Employee findByEmail(String email) {
+		Optional<Employee> employee = employeeRepository.findByEmail(email);
+		if (employee.isEmpty()) {
+			throw new RuntimeException("Did not find employee with email - " + email);
+		}
+		return employee.orElse(null);
 	}
 
 	@Override
@@ -52,9 +57,3 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 }
-
-
-
-
-
-
