@@ -2,11 +2,11 @@ package com.test.springboot.controller;
 
 import com.test.springboot.entity.Employee;
 import com.test.springboot.service.EmployeeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/employees")
@@ -21,13 +21,13 @@ public class EmployeeController {
 	// add mapping for "/list"
 
 	@GetMapping("/list")
-	public String listEmployees(Model theModel) {
+	public String listEmployees(Model theModel, Pageable pageable) {
 
 		// get the employees from db
-		List<Employee> theEmployees = employeeService.findAll();
+		Page<Employee> theEmployees = employeeService.findAll(pageable);
 
 		// add to the spring model
-		theModel.addAttribute("employees", theEmployees);
+		theModel.addAttribute("employees", theEmployees.toList());
 
 		return "employees/list-employees";
 	}

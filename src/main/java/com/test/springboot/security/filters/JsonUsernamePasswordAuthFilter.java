@@ -34,7 +34,6 @@ public class JsonUsernamePasswordAuthFilter extends UsernamePasswordAuthenticati
 
             setDetails(request, authRequest);
             return this.getAuthenticationManager().authenticate(authRequest);
-
         } catch (IOException e) {
             throw new RuntimeException("Failed to parse JSON login request", e);
         }

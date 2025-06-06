@@ -1,12 +1,12 @@
 package com.test.springboot.service;
 
-import java.util.List;
-
 import com.test.springboot.entity.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface EmployeeService {
 
-	List<Employee> findAll();
+	Page<Employee> findAll(Pageable pageable);
 	
 	Employee findById(int theId);
 

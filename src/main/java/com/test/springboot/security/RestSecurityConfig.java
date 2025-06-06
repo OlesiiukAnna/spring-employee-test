@@ -11,7 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +22,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -66,17 +67,17 @@ public class RestSecurityConfig {
         jsonFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
 
         http
-                .sessionManagement(session -> session
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(false)
-        )
+                .securityContext(securityContext ->
+                        securityContext
+                                .requireExplicitSave(false)
+                )
                 .authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/", "/api/auth/login", "/api/auth/logout", "/hello").permitAll()
+                                .requestMatchers("/", "/api/auth/login", "/api/auth/logout", "/hello", "/api/employees/check-session").permitAll()
                                 .requestMatchers("/api/employees", "/api/employees/**").hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated()
                 )
-                .addFilter(jsonFilter)
+                .addFilterAt(jsonFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
                         logout
                                 .logoutUrl("/api/auth/logout")
@@ -94,7 +95,7 @@ public class RestSecurityConfig {
                                 .accessDeniedHandler(accessDeniedHandler())
                                 .authenticationEntryPoint(authenticationEntryPoint())
                 )
-                .csrf(csrf -> csrf.disable());
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -102,7 +103,6 @@ public class RestSecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            SecurityContextHolder.getContext().setAuthentication(authentication);
             response.setStatus(HttpStatus.OK.value());
             response.setContentType("application/json");
 
