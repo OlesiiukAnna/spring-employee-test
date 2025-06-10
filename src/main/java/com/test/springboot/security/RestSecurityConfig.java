@@ -74,7 +74,8 @@ public class RestSecurityConfig {
                 .authorizeHttpRequests(configurer ->
                         configurer
                                 .requestMatchers("/", "/api/auth/login", "/api/auth/logout", "/hello", "/api/employees/check-session").permitAll()
-                                .requestMatchers("/api/employees", "/api/employees/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/api/employees", "/api/employees/**",
+                                        "/api/tasks", "/api/tasks/**").hasAnyRole("USER", "ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .addFilterAt(jsonFilter, UsernamePasswordAuthenticationFilter.class)

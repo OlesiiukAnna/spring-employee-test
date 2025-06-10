@@ -1,11 +1,14 @@
 package com.test.springboot.dto;
 
+import java.util.List;
+
 public class EmployeeResponseDto {
 
     private int id;
     private String firstName;
     private String lastName;
     private String email;
+    private List<TaskDto> tasks;
 
     public int getId() {
         return id;
@@ -38,4 +41,13 @@ public class EmployeeResponseDto {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public List<TaskDto> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskDto> tasks) {
+        this.tasks = tasks;
+    }
+
 }

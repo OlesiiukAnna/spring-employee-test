@@ -9,7 +9,9 @@ import com.test.springboot.entity.Employee;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
+
     Page<Employee> findAllByOrderByLastNameAsc(Pageable pageable);
 
     Optional<Employee> findByEmail(String email);
+
 }
