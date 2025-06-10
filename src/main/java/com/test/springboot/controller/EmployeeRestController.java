@@ -5,6 +5,7 @@ import com.test.springboot.dto.EmployeeResponseDto;
 import com.test.springboot.dto.TaskDto;
 import com.test.springboot.service.EmployeeService;
 import com.test.springboot.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,7 @@ public class EmployeeRestController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public void addEmployee(@RequestBody EmployeeRequestDto employee) {
+    public void addEmployee(@Valid @RequestBody EmployeeRequestDto employee) {
         employeeService.save(employee);
     }
 
