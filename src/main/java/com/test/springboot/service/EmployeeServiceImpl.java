@@ -2,6 +2,9 @@ package com.test.springboot.service;
 
 import java.util.Optional;
 
+import com.test.springboot.dto.EmployeeRequestDto;
+import com.test.springboot.dto.EmployeeResponseDto;
+import com.test.springboot.mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,43 +16,48 @@ import com.test.springboot.entity.Employee;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
+	private EmployeeMapper employeeMapper;
 	private EmployeeRepository employeeRepository;
 	
 	@Autowired
-	public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository) {
+	public EmployeeServiceImpl(EmployeeMapper theEmployeeMapper, EmployeeRepository theEmployeeRepository) {
 		employeeRepository = theEmployeeRepository;
+		employeeMapper = theEmployeeMapper;
 	}
 	
 	@Override
-	public Page<Employee> findAll(Pageable pageable) {
-		return employeeRepository.findAllByOrderByLastNameAsc(pageable);
+	public Page<EmployeeResponseDto> findAll(Pageable pageable) {
+		return employeeRepository
+				.findAllByOrderByLastNameAsc(pageable)
+				.map(employeeMapper::toResponseDto);
 	}
 
 	@Override
-	public Employee findById(int theId) {
-		Optional<Employee> result = employeeRepository.findById(theId);
+	public EmployeeResponseDto findById(int id) {
+		Optional<Employee> result = employeeRepository.findById(id);
 		Employee employee = null;
 		if (result.isPresent()) {
 			employee = result.get();
 		}
 		else {
-			throw new RuntimeException("Did not find employee id - " + theId);
+			throw new RuntimeException("Did not find employee id - " + id);
 		}
-		return employee;
+		return employeeMapper.toResponseDto(employee);
 	}
 
 	@Override
-	public Employee findByEmail(String email) {
+	public EmployeeResponseDto findByEmail(String email) {
 		Optional<Employee> employee = employeeRepository.findByEmail(email);
 		if (employee.isEmpty()) {
 			throw new RuntimeException("Did not find employee with email - " + email);
 		}
-		return employee.orElse(null);
+		return employeeMapper.toResponseDto(employee.orElse(null));
 	}
 
 	@Override
-	public void save(Employee theEmployee) {
-		employeeRepository.save(theEmployee);
+	public void save(EmployeeRequestDto employee) {
+		Employee employeeEntity = employeeMapper.toEntity(employee);
+		employeeRepository.save(employeeEntity);
 	}
 
 	@Override

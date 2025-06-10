@@ -28,9 +28,6 @@ public class Employee {
     @Column(name = "password")
     private String password;
 
-
-    // define constructors
-
     public Employee() {
 
     }
@@ -50,8 +47,6 @@ public class Employee {
         this.email = email;
         this.password = password;
     }
-
-    // define getter/setter
 
     public int getId() {
         return id;
@@ -93,22 +88,9 @@ public class Employee {
         this.password = password;
     }
 
-    // define tostring
-
     @Override
     public String toString() {
         return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-

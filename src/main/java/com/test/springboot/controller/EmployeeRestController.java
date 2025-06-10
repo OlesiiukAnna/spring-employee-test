@@ -1,5 +1,7 @@
 package com.test.springboot.controller;
 
+import com.test.springboot.dto.EmployeeRequestDto;
+import com.test.springboot.dto.EmployeeResponseDto;
 import com.test.springboot.entity.Employee;
 import com.test.springboot.service.EmployeeService;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +23,8 @@ public class EmployeeRestController {
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable int id) {
-        Employee employee = employeeService.findById(id);
+    public ResponseEntity<EmployeeResponseDto> getEmployeeById(@PathVariable int id) {
+        EmployeeResponseDto employee = employeeService.findById(id);
         if (employee == null) {
             return ResponseEntity.notFound().build();
         }
@@ -30,18 +32,18 @@ public class EmployeeRestController {
     }
 
     @GetMapping("/search/{email}")
-    public ResponseEntity<Employee> getEmployeeByEmail(@PathVariable String email) {
-        Employee theEmployee = employeeService.findByEmail(email);
+    public ResponseEntity<EmployeeResponseDto> getEmployeeByEmail(@PathVariable String email) {
+        EmployeeResponseDto employee = employeeService.findByEmail(email);
 
-        if (theEmployee == null) {
+        if (employee == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(theEmployee);
+        return ResponseEntity.ok(employee);
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<Employee>> getEmployees(@RequestParam(name = "page", defaultValue = "0") int page,
+    public ResponseEntity<List<EmployeeResponseDto>> getEmployees(@RequestParam(name = "page", defaultValue = "0") int page,
                                                        @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(employeeService.findAll(pageable).toList());
@@ -49,7 +51,7 @@ public class EmployeeRestController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public void addEmployee(@RequestBody Employee employee) {
+    public void addEmployee(@RequestBody EmployeeRequestDto employee) {
         employeeService.save(employee);
     }
 
