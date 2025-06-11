@@ -12,7 +12,7 @@ public interface TaskService {
 
     void save(TaskDto taskRequestDto);
 
-    void deleteById(int taskId);
+    void removeTaskFromEmployee(int taskId);
 
     Page<TaskDto> findAll(Pageable pageable);
 

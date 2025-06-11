@@ -94,7 +94,7 @@ public class EmployeeRestController {
                 .findFirst();
 
         if (taskOptional.isPresent()) {
-            taskService.deleteById(taskId);
+            taskService.removeTaskFromEmployee(taskId);
             return ResponseEntity.noContent().build();
         } else {
             throw new IllegalArgumentException("Task with id " + taskId + " does not found in employee tasks with id " + employeeId);

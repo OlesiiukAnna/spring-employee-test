@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class TaskServiceImpl implements TaskService {
         return tasks.stream().map(taskMapper::toResponseDto).toList();
     }
 
+    @Transactional
     @Override
     public void save(TaskDto dto) {
         Employee employee = employeeRepository.findById(dto.getEmployeeId())
@@ -42,9 +44,15 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(task);
     }
 
+    @Transactional
     @Override
-    public void deleteById(int taskId) {
-        taskRepository.deleteById(taskId);
+    public void removeTaskFromEmployee(int taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+        Employee employee = task.getEmployee();
+        if (employee != null) {
+            employee.getTasks().remove(task);
+        }
     }
 
     @Override

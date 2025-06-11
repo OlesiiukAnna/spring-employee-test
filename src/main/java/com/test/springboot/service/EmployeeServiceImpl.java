@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.test.springboot.dao.EmployeeRepository;
 import com.test.springboot.entity.Employee;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -54,12 +55,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employeeMapper.toResponseDto(employee.orElse(null));
 	}
 
+	@Transactional
 	@Override
 	public void save(EmployeeRequestDto employee) {
 		Employee employeeEntity = employeeMapper.toEntity(employee);
 		employeeRepository.save(employeeEntity);
 	}
 
+	@Transactional
 	@Override
 	public void deleteById(int theId) {
 		employeeRepository.deleteById(theId);
