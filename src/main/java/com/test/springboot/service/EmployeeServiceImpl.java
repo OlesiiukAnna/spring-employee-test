@@ -35,7 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeResponseDto findById(int id) {
-		Optional<Employee> result = employeeRepository.findById(id);
+		Optional<Employee> result = employeeRepository.findWithTasksById(id);
 		Employee employee = null;
 		if (result.isPresent()) {
 			employee = result.get();
@@ -48,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeResponseDto findByEmail(String email) {
-		Optional<Employee> employee = employeeRepository.findByEmail(email);
+		Optional<Employee> employee = employeeRepository.findWithTasksByEmail(email);
 		if (employee.isEmpty()) {
 			throw new RuntimeException("Did not find employee with email - " + email);
 		}
