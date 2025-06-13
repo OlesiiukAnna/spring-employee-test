@@ -44,15 +44,40 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.save(task);
     }
 
+    @Override
+    public void addTaskToEmployee(int employeeId, TaskDto taskDto) {
+        employeeRepository
+                .findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee id " + employeeId + " not found"));
+        taskDto.setEmployeeId(employeeId);
+        this.save(taskDto);
+    }
+
     @Transactional
     @Override
-    public void removeTaskFromEmployee(int taskId) {
+    public void remove(int taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
         Employee employee = task.getEmployee();
         if (employee != null) {
             employee.getTasks().remove(task);
         }
+        taskRepository.delete(task);
+    }
+
+    @Override
+    public void removeEmployeeTaskById(int employeeId, int taskId) {
+        Employee employee = employeeRepository
+                .findById(employeeId)
+                .orElseThrow(() -> new IllegalArgumentException("Employee id " + employeeId + " not found"));
+
+        employee.getTasks().stream()
+                .filter(t -> t.getId() == taskId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Task with id " + taskId + " does not found in employee tasks with id " + employeeId));
+
+        this.remove(taskId);
     }
 
     @Override

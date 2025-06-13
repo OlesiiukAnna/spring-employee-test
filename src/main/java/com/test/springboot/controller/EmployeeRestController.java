@@ -6,6 +6,7 @@ import com.test.springboot.dto.TaskDto;
 import com.test.springboot.service.EmployeeService;
 import com.test.springboot.service.TaskService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -48,10 +48,10 @@ public class EmployeeRestController {
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<EmployeeResponseDto>> getEmployees(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                       @RequestParam(name = "size", defaultValue = "10") int size) {
+    public ResponseEntity<Page<EmployeeResponseDto>> getEmployees(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(employeeService.findAll(pageable).toList());
+        return ResponseEntity.ok(employeeService.findAll(pageable));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -73,32 +73,16 @@ public class EmployeeRestController {
     }
 
     @PostMapping("{employeeId}/tasks")
-    public void addTask(@PathVariable int employeeId, @RequestBody TaskDto taskDto) {
-        EmployeeResponseDto employeeRequestDto = employeeService.findById(employeeId);
-        if(employeeRequestDto == null) {
-            throw new IllegalArgumentException("Employee id " + employeeId + " not found");
-        }
-        taskDto.setEmployeeId(employeeId);
-        taskService.save(taskDto);
+    public ResponseEntity<Void> addTask(@PathVariable int employeeId, @RequestBody TaskDto taskDto) {
+        taskService.addTaskToEmployee(employeeId , taskDto);
+        return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("{employeeId}/tasks/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable int employeeId, @PathVariable int taskId) {
-        EmployeeResponseDto employeeResponseDto = employeeService.findById(employeeId);
-        if (employeeResponseDto == null) {
-            throw new IllegalArgumentException("Employee with id " + employeeId + " not found");
-        }
-        Optional<TaskDto> taskOptional = employeeResponseDto.getTasks().stream()
-                .filter(task -> task.getId() == taskId)
-                .findFirst();
-
-        if (taskOptional.isPresent()) {
-            taskService.removeTaskFromEmployee(taskId);
-            return ResponseEntity.noContent().build();
-        } else {
-            throw new IllegalArgumentException("Task with id " + taskId + " does not found in employee tasks with id " + employeeId);
-        }
+        taskService.removeEmployeeTaskById(employeeId, taskId);
+        return ResponseEntity.noContent().build();
     }
 
 //    @GetMapping("/check-session")
