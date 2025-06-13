@@ -29,20 +29,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Page<EmployeeResponseDto> findAll(Pageable pageable) {
 		return employeeRepository
-				.findAllByOrderByLastNameAsc(pageable)
+				.findAll(pageable)
 				.map(employeeMapper::toResponseDto);
 	}
 
 	@Override
 	public EmployeeResponseDto findById(int id) {
 		Optional<Employee> result = employeeRepository.findWithTasksById(id);
-		Employee employee = null;
-		if (result.isPresent()) {
-			employee = result.get();
-		}
-		else {
-			throw new RuntimeException("Did not find employee id - " + id);
-		}
+		Employee employee = result.orElseThrow(() -> new IllegalArgumentException("Did not find employee id - " + id));
 		return employeeMapper.toResponseDto(employee);
 	}
 

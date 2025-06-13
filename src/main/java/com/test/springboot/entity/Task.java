@@ -80,7 +80,7 @@ public class Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
-                ", employee=" + employee +
+                ", employeeId=" + (employee != null ? employee.getId() : null) +
                 '}';
     }
 }

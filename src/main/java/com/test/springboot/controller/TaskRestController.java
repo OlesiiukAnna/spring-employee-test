@@ -2,12 +2,11 @@ package com.test.springboot.controller;
 
 import com.test.springboot.dto.TaskDto;
 import com.test.springboot.service.TaskService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -20,10 +19,10 @@ public class TaskRestController {
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<TaskDto>> getEmployees(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
+    public ResponseEntity<Page<TaskDto>> getTasks(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(taskService.findAll(pageable).toList());
+        return ResponseEntity.ok(taskService.findAll(pageable));
     }
 
     @PostMapping
@@ -33,6 +32,6 @@ public class TaskRestController {
 
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable int id) {
-        taskService.removeTaskFromEmployee(id);
+        taskService.remove(id);
     }
 }
